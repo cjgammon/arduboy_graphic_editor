@@ -52,12 +52,13 @@ export class EditorView extends React.Component<{}, {}> {
     }
 
     handle_CLICK(e) {
-        let rect = this.canvas.getBoundingClientRect();
-        let x = e.clientX - rect.left;
-        let y = e.clientY - rect.top;
-        x = Math.floor(appState.width * x / this.canvas.clientWidth);
-        y = Math.floor(appState.height * y / this.canvas.clientHeight);
-        this.draw(x, y);
+        let {x, y} = this.getMousePosition(e.clientX, e.clientY);
+
+        if (this.state.tool == 'brush') {
+            this.draw(x, y);
+        } else if (this.state.tool == 'fill') {
+            this.filler(x, y, appState.data[x][y]);
+        }
     }
 
     handle_MOUSEUP(e) {
@@ -70,27 +71,39 @@ export class EditorView extends React.Component<{}, {}> {
 
     handle_MOUSEMOVE(e) {
         if (this.active) {
-            let rect = this.canvas.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
-            x = Math.floor(appState.width * x / this.canvas.clientWidth);
-            y = Math.floor(appState.height * y / this.canvas.clientHeight);
+            let {x, y} = this.getMousePosition(e.clientX, e.clientY);
             this.draw(x, y);
         }
     }
 
-    handle_UPDATE_SIZE() {
+    getMousePosition(_x, _y) {
+        let rect = this.canvas.getBoundingClientRect();
+        let x = _x - rect.left;
+        let y = _y - rect.top;
+        x = Math.floor(appState.width * x / this.canvas.clientWidth);
+        y = Math.floor(appState.height * y / this.canvas.clientHeight);
 
-    }
-
-    handle_LOAD() {
-
+        return {x, y};
     }
 
     setColor(color) {
         appState.color = color;
         this.setState({color});
         this.ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
+    }
+
+    filler(x, y, cc) {
+        if (x >= 0 && x < appState.width && y >= 0 && y < appState.height) {
+            if (JSON.stringify(appState.data[x][y]) == JSON.stringify(cc) && 
+                JSON.stringify(appState.data[x][y]) !== JSON.stringify(this.state.color)) 
+            {
+                this.draw(x, y);
+                this.filler(x + 1, y, cc);
+                this.filler(x, y + 1, cc);
+                this.filler(x - 1, y, cc);
+                this.filler(x, y - 1, cc);
+            }
+        }
     }
 
     draw(x, y, count?) {
@@ -105,15 +118,14 @@ export class EditorView extends React.Component<{}, {}> {
     }
     
     render() {
-
         return (
             <div className={styles.container}>
                 <div className={styles.main}>
                     <canvas ref={this.canvasRef} className={styles.canvas}></canvas>
 
                     <div className={styles.ui}>
-                        <button>brush</button>
-                        <button>bucket</button>
+                        <button onClick={() => this.setState({tool: 'brush'})}>brush</button>
+                        <button onClick={() => this.setState({tool: 'fill'})}>bucket</button>
 
                         <div className={styles.swatches}>
                             {this.renderSwatches()}
