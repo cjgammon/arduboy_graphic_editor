@@ -16,3 +16,26 @@
     justify-content: center;
     align-items: center;
 }
+
+.ui{
+    position: fixed;
+    top: 0;
+    display: flex;
+}
+
+.swatches{
+    display: flex;
+}
+
+.swatch{
+    border: 3px solid gray;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+
+    &.selected{
+        border-color: #0099FF;
+    }
+}

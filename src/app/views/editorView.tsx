@@ -1,27 +1,30 @@
 import appState from "app/models/appModel";
 import * as React from "react";
 
+import classnames from 'classnames';
 import styles from './editorView.less';
 
 // 'HelloProps' describes the shape of props.
 // State is never set so we use the '{}' type.
 export class EditorView extends React.Component<{}, {}> {
   
+    state = {
+        tool: 'brush',
+        color: appState.color
+    }
+
     ctx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     canvasRef: React.RefObject<HTMLCanvasElement> = React.createRef();
     w: number;
     h: number;
     active: boolean = false;
-    data;
 
-    color: Array<number> = [0, 0, 0, 255];
     steps: Array<any> = [];
     redo_arr: Array<any> = [];
     frames: Array<any> = [];
 
     componentDidMount() {
-        console.log("HI");
         this.initCanvas();
     }
 
@@ -34,7 +37,7 @@ export class EditorView extends React.Component<{}, {}> {
 
         this.w = this.canvas.width;
         this.h = this.canvas.height;
-        this.data = [...Array(appState.width)].map(e => Array(appState.height).fill([255, 255, 255, 255]));
+        appState.data = [...Array(appState.width)].map(e => Array(appState.height).fill([255, 255, 255, 255]));
 
         this.canvas.addEventListener("mousemove", (e) => this.handle_MOUSEMOVE(e));
         this.canvas.addEventListener("mousedown", (e) => this.handle_MOUSEDOWN(e));
@@ -85,13 +88,14 @@ export class EditorView extends React.Component<{}, {}> {
     }
 
     setColor(color) {
-        this.color = color;
+        appState.color = color;
+        this.setState({color});
         this.ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
     }
 
     draw(x, y, count?) {
         if (x > 0 && x < appState.width && y > 0 && y < appState.height) {
-            this.data[x][y] = this.color;
+            appState.data[x][y] = appState.color;
             let _x = Math.floor(x * (this.w / appState.width));
             let _y = Math.floor(y * (this.h / appState.height));
             let _w = Math.floor(this.w / appState.width);
@@ -106,8 +110,37 @@ export class EditorView extends React.Component<{}, {}> {
             <div className={styles.container}>
                 <div className={styles.main}>
                     <canvas ref={this.canvasRef} className={styles.canvas}></canvas>
+
+                    <div className={styles.ui}>
+                        <button>brush</button>
+                        <button>bucket</button>
+
+                        <div className={styles.swatches}>
+                            {this.renderSwatches()}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
+
+    renderSwatches() {
+        let arr = [];
+
+        for (let i = 0; i < appState.colors.length; i++) {
+            let color = appState.colors[i];
+            arr.push(<div 
+                onClick={() => this.setColor(color)}
+                className={classnames({
+                    [styles.swatch]: true, 
+                    [styles.selected]: color.join(',') == this.state.color.join(',')
+                })} 
+                style={{
+                    backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`
+                }}></div>);
+        }
+
+        return arr;
+    }
+
 }

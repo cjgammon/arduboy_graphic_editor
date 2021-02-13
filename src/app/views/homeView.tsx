@@ -1,10 +1,7 @@
 import appState from "app/models/appModel";
 import * as React from "react";
 
-import history from 'app/utils/history';
-import {
-    withRouter
-  } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 
 interface Props{
     history: any
@@ -23,8 +20,6 @@ export class HomeView extends React.Component<Props, {}> {
         appState.height = parseInt(this.heightRef.current.value);
         
         this.props.history.push('/edit')
-
-        //history.push("/edit");
     }
 
     handle_LOAD() {

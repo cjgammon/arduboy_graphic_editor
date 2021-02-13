@@ -21,6 +21,7 @@
   "dependencies": {
     "@types/react-router": "^5.1.11",
     "autoprefixer": "^9.7.6",
+    "classnames": "^2.2.6",
     "css-loader": "^3.5.2",
     "history": "^5.0.0",
     "less": "^3.11.1",
