@@ -5,7 +5,7 @@ import {
     Route,
     Link
   } from "react-router-dom";
-import { MainView } from "./views/mainView";
+import { EditorView } from "./views/editorView";
 
 export default class App extends React.Component {
 
@@ -14,7 +14,7 @@ export default class App extends React.Component {
             <Router>
                     <Switch>
                         <Route path="/">
-                            <MainView/>
+                            <EditorView/>
                         </Route>
                     </Switch>
             </Router>
