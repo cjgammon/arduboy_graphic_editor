@@ -10,8 +10,6 @@ export class EditorView extends React.Component<{}, {}> {
     ctx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     canvasRef: React.RefObject<HTMLCanvasElement> = React.createRef();
-    heightRef: React.RefObject<HTMLInputElement> = React.createRef();
-    widthRef: React.RefObject<HTMLInputElement> = React.createRef();
     w: number;
     h: number;
     active: boolean = false;
@@ -23,6 +21,7 @@ export class EditorView extends React.Component<{}, {}> {
     frames: Array<any> = [];
 
     componentDidMount() {
+        console.log("HI");
         this.initCanvas();
     }
 
@@ -92,8 +91,6 @@ export class EditorView extends React.Component<{}, {}> {
 
     draw(x, y, count?) {
         if (x > 0 && x < appState.width && y > 0 && y < appState.height) {
-            console.log("draw");
-            console.log(this.data);
             this.data[x][y] = this.color;
             let _x = Math.floor(x * (this.w / appState.width));
             let _y = Math.floor(y * (this.h / appState.height));
@@ -107,12 +104,6 @@ export class EditorView extends React.Component<{}, {}> {
 
         return (
             <div className={styles.container}>
-                <div>
-                    width <input ref={this.widthRef}></input> 
-                    height <input ref={this.heightRef}></input>
-                    <button onClick={() => this.handle_UPDATE_SIZE()}>create</button> 
-                    <button onClick={() => this.handle_LOAD()}>load</button>
-                </div>
                 <div className={styles.main}>
                     <canvas ref={this.canvasRef} className={styles.canvas}></canvas>
                 </div>

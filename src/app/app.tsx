@@ -3,21 +3,27 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
   } from "react-router-dom";
 import { EditorView } from "./views/editorView";
+import HomeView from "./views/homeView";
 
-export default class App extends React.Component {
+
+export class App extends React.Component {
 
     render() {
         return (
             <Router>
-                    <Switch>
-                        <Route path="/">
-                            <EditorView/>
-                        </Route>
-                    </Switch>
+                <Switch>
+                    <Route path="/edit">
+                        <EditorView/>
+                    </Route>
+                    <Route exact path="/">
+                        <HomeView/>
+                    </Route>
+                </Switch>
             </Router>
         );
     }
 }
+
+export default App;
